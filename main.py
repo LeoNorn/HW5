@@ -6,6 +6,7 @@ from handlers.pictures import picture_router
 from handlers.shop import shop_router
 from bot import bot, dp
 
+
 async def main():
     dp.include_routers(start_router, info_router, picture_router, shop_router)
     await dp.start_polling(bot)
