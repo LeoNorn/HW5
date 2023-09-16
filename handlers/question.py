@@ -13,50 +13,6 @@ from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
 
 
-#question_router = Router()
-
-# class UserData(StatesGroup):
-#     sex = State()
-#     old = State()
-#     year = State()
-
-# @question_router.message(Command("question"))
-# async def start_question(message: Message, state: FSMContext):
-#     await state.set_state(UserData.sex)
-#     await message.answer("Введите ваш пол")
-
-# question_router.message(F.text, UserData.sex)
-# async def procces_sex(message: Message, state: FSMContext):
-#     await state.update_data(sex=message.text)
-#     await state.set_state(UserData.old)
-#     await message.answer("Введите ваш возраст")
-    #kb = InlineKeyboardMarkup(
-        #inline_keyboard=[
-            #[
-                #IButton(text="Жен", callback_data="F"),
-                #IButton(text="Муж", callback_data="M"),
-            #],
-        #]
-    #)
-    #await message.answer("Выберите пол", reply_markup=kb)
-
-
-#@question_router.callback_query(F.data == "F")
-#async def about(callback: types.CallbackQuery):
-    #await callback.answer()
-
-    #await callback.message.answer("Вы выбрали пол: Жен")
-
-
-#@question_router.callback_query(F.data == "M")
-#async def about(callback: types.CallbackQuery):
-    #await callback.answer()
-
-    #await callback.message.answer("Вы выбрали пол: Муж")
-
-#question_router.message(F.text, UserData.sex)
-#async def procces_sex(message: Message, state: FSMContext):
-    #await message.answer("Введите ваш возраст")
 questions_router = Router()
 
 
@@ -96,22 +52,27 @@ async def procces_sex(message: Message, state: FSMContext):
     ],
     ]
     )
-    await message.answer("Выберите пол", reply_markup=kb)
-@questions_router.callback_query(F.data == "F")
-async def about(callback: types.CallbackQuery):
-    await callback.answer()
+    await message.answer("Выберите, и напишите ваш пол", reply_markup=kb)
 
-    await callback.message.answer("Вы выбрали пол: Жен")
+    @questions_router.callback_query(F.data == "F")
+    async def about(callback: types.CallbackQuery):
+        await callback.answer()
 
+        await callback.message.answer("")
 
-@questions_router.callback_query(F.data == "M")
-async def about(callback: types.CallbackQuery):
-    await callback.answer()
+    @questions_router.callback_query(F.data == "M")
+    async def about(callback: types.CallbackQuery):
+        await callback.answer()
 
-    await callback.message.answer("Вы выбрали пол: Муж")
+        await callback.message.answer("")
+
 
 @questions_router.message(F.text, UserData.sex)
 async def process_email(message: Message, state: FSMContext):
+    if message.text not in ['Муж', 'Жен']:
+
+        await message.answer("Вы ввели неправильный пол")
+    else:
         await state.update_data(sex=message.text)
         await state.set_state(UserData.old)
         await message.answer("Напишите ваш возраст")
@@ -119,14 +80,18 @@ async def process_email(message: Message, state: FSMContext):
 
 @questions_router.message(F.text, UserData.old)
 async def process_email(message: Message, state: FSMContext):
-    await state.update_data(question=message.text)
+    n = int(message.text)
+    if n > 100 or n < 1:
+        await message.answer('Вы ввели неправильный возраст')
+    else:
+        await state.update_data(old=message.text)
 
 
     data = await state.get_data()
-    # save to DB
+
     await message.answer(
         "Спасибо. Вот ваши ответы:"
-        f"Имя: {data['name']}, пол: {data['sex']}, ваш вопрос: {data['old']}",
+        f"Имя: {data['name']}, пол: {data['sex']}, ваш возраст: {data['old']}",
         reply_markup=ReplyKeyboardRemove()
     )
     await state.clear()
