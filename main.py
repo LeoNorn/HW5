@@ -6,9 +6,35 @@ from handlers.pictures import picture_router
 from handlers.shop import shop_router
 from bot import bot, dp
 from handlers.question import questions_router
+from db.shopdb import init_db, create_tables, populate_tables
+from aiogram.types import BotCommand
+
+
+async def on_startup(dispatcher):
+    init_db()
+    create_tables()
+    populate_tables()
+
+
 
 async def main():
-    dp.include_routers(start_router, info_router, picture_router, shop_router, questions_router)
+    await bot.set_my_commands(
+        [
+            BotCommand(command="start", description="Начать"),
+            BotCommand(command="myinfo", description="Получи инфромацию о себе"),
+            BotCommand(command="picture", description="Получить картинку"),
+            BotCommand(command="ask", description="Опросник"),
+        ]
+    )
+
+    dp.startup.register(on_startup)
+
+    dp.include_router(start_router)
+    dp.include_router(info_router)
+    dp.include_router(picture_router)
+    dp.include_router(shop_router)
+    dp.include_router(questions_router)
+
     await dp.start_polling(bot)
 
 
