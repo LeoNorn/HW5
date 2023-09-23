@@ -24,21 +24,14 @@ async def shop(message: types.Message):
 
 @shop_router.message(F.text == "Купить Фрукты")
 async def show_frukt(message: types.Message):
-    products = get_product()
-    for pr in get_product():
-        await message.answer(pr[1])
-
+    await message.answer(get_product()[0][1])
 
 
 @shop_router.message(F.text == "Купить Ягоды")
 async def show_yagod(message: types.Message):
-    products = get_product()
-    for pr in get_product():
-        await message.answer(pr[2])
+    await message.answer(get_product()[1][1])
 
 
 @shop_router.message(F.text == "Купить Овощи")
 async def show_ovosh(message: types.Message):
-    products = get_product()
-    for pr in get_product():
-        await message.answer(pr[3])
+    await message.answer(get_product()[2][1])
