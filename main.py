@@ -24,6 +24,7 @@ async def main():
             BotCommand(command="myinfo", description="Получи инфромацию о себе"),
             BotCommand(command="picture", description="Получить картинку"),
             BotCommand(command="ask", description="Опросник"),
+            BotCommand(command="shop", description="Магазин"),
         ]
     )
 
