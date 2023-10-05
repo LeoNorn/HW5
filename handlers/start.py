@@ -8,6 +8,7 @@ from text2 import BUTTON_TEXT
 
 start_router = Router()
 
+
 @start_router.message(Command("start"))
 async def hello(message: types.Message):
     kb = InlineKeyboardMarkup(

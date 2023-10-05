@@ -10,6 +10,7 @@ from db.shopdb import init_db, create_tables, populate_tables
 from aiogram.types import BotCommand
 
 
+
 async def on_startup(dispatcher):
     init_db()
     create_tables()
